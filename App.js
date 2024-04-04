@@ -1,13 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { StyleSheet, View, Image } from 'react-native';
-import { YellowBox } from 'react-native-web';
 import * as ImagePicker from 'expo-image-picker';
 import Button from './components/Button';
 import ImageViewer from './components/ImageViewer';
 import EmojiPicker from "./components/EmojiPicker";
 import EmojiList from './components/EmojiList';
 import EmojiSticker from './components/EmojiSticker';
+import CircleButton from './components/CircleButton';
+import IconButton from './components/IconButton';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+
 
 
 const PlaceholderImage = require('./assets/images/messi.jpg');
@@ -18,6 +21,11 @@ export default function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [pickedEmoji, setPickedEmoji] = useState(null);
 
+  
+  const onReset = () => {
+    setShowAppOptions(false);
+  };
+
   const onAddSticker = () => {
     setIsModalVisible(true);
   };
@@ -25,11 +33,6 @@ export default function App() {
   const onModalClose = () => {
     setIsModalVisible(false);
   };
-
-  const onReset = () => {
-    setShowAppOptions(false);
-  };
-
 
   const onSaveImageAsync = async () => {
     // we will implement this later
@@ -48,14 +51,16 @@ export default function App() {
       alert('You did not select any image.');
     }
   };
+  
 
   return (
-    <View style={styles.container}>
+    <GestureHandlerRootView style={styles.container}>
       <View style={styles.imageContainer}>
       <ImageViewer
           placeholderImageSource={PlaceholderImage}
           selectedImage={selectedImage}
         />
+        {pickedEmoji && <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />}
 
       </View>
       {showAppOptions ? (
@@ -71,7 +76,6 @@ export default function App() {
         <View style={styles.footerContainer}>
          <Button theme="primary" label="Choose a photo" onPress={pickImageAsync} />
          <Button label="Use this photo" onPress={() => setShowAppOptions(true)}/>
-
     </View>
     )}
 
@@ -79,7 +83,7 @@ export default function App() {
         <EmojiList onSelect={setPickedEmoji} onCloseModal={onModalClose} />
       </EmojiPicker>
       <StatusBar style="auto" />
-    </View>
+    </GestureHandlerRootView>
   );
 }
 
